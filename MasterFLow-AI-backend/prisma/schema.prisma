@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  COMPLETE
+  RUNNING
+  IDLE
+  ERROR
+}
+
+model User {
+  id         String      @id @default(uuid())
+  email      String      @unique
+  name       String?
+  password   String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  userTools  UserTools[] @relation("UserTools")
+  workflows  Workflow[]
+}
+
+model Workflow {
+  id           String         @id @default(uuid())
+  name         String
+  description  String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  // Tools       Tools[] @relation("WorkflowTools")
+  Steps        Step[]
+  workflowRuns WorkflowRuns[] @relation("WorkflowRuns")
+  userId       String
+  user         User           @relation(fields: [userId], references: [id])
+  settings     Json       
+}
+
+model Step {
+  id         String        @id @default(uuid())
+  name       String
+  toolId     String
+  tool       Tools         @relation("StepTool", fields: [toolId], references: [id])
+  workflowId String
+  workflow   Workflow      @relation(fields: [workflowId], references: [id])
+  createdAt  DateTime      @default(now())
+  parentId   String?
+  parent     Step?         @relation("StepToStep", fields: [parentId], references: [id])
+  children   Step[]        @relation("StepToStep")
+  settings   Json
+  firstStep  Boolean       @default(false)
+  updatedAt  DateTime      @updatedAt
+}
+
+model Tools {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  toolLink    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  steps       Step[]   @relation("StepTool")
+  users       UserTools[] @relation("UserTools")
+  inputType   String 
+  outputType  String 
+  price       Float   @default(0)
+  settingsSchema Json
+}
+
+model UserTools {
+  id     String @id @default(uuid())
+  userId String
+  user  User   @relation("UserTools", fields: [userId], references: [id])
+  tools   Tools[]  @relation("UserTools")
+}
+
+model WorkflowRuns {
+  id           String     @id @default(uuid())
+  workflowId   String
+  workflow     Workflow   @relation("WorkflowRuns", fields: [workflowId], references: [id])
+  runningSteps StepRuns[] @relation("WorkflowSteps")
+  status       Status     @default(IDLE)
+}
+
+model StepRuns {
+  id            String       @id @default(uuid())
+  workflowRunId String
+  status        Status       @default(IDLE)
+  output        Json
+  parentStepId  String?
+  workflowRun   WorkflowRuns @relation("WorkflowSteps", fields: [workflowRunId], references: [id])
+}
+

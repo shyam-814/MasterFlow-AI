@@ -1,0 +1,48 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:redis": "ts-node src/redis/runTests.ts",
+    "test:redis:basic": "ts-node -e \"import('./src/redis/example').then(m => m.exampleUsage())\"",
+    "test:redis:priority": "ts-node -e \"import('./src/redis/example').then(m => m.priorityQueueExamples())\"",
+    "test:redis:comprehensive": "ts-node -e \"import('./src/redis/tests').then(m => new m.RedisTester().runAllTests())\"",
+    "test:redis:demo": "ts-node -e \"import('./src/redis/tests').then(m => m.demoAllFeatures())\"",
+    "test:redis:benchmark": "ts-node -e \"import('./src/redis/tests').then(m => m.performanceBenchmarks())\"",
+    "redis:up": "docker-compose up -d",
+    "redis:down": "docker-compose down",
+    "redis:logs": "docker-compose logs -f redis",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.16.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "react-markdown": "^10.1.0",
+    "redis": "^5.8.2",
+    "winston": "^3.17.0",
+    "zod": "^4.1.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.1",
+    "@types/redis": "^4.0.10",
+    "@types/winston": "^2.4.4",
+    "nodemon": "^3.1.10",
+    "prisma": "^6.16.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.2"
+  }
+}

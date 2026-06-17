@@ -1,0 +1,28 @@
+{
+    "queueTask":{
+        "workflowRunId":"abcdef",
+        "childId":"abcde",
+        "stepId":"abcde",
+        "tool":{
+            "input":"",
+            "toolId":"abcde"
+        },
+        "runNextStep":"false"
+    },
+    "workflowJson":{
+        "workflowName":"abcde",
+        "description":"abcds",
+        "steps":[
+            {
+                "name":"abcds",
+                "toolId":"abcde",
+                "parentId":"abcde"
+            }
+        ]
+    },
+    "workflowRunJson":{
+        "workflowId":"abcde",
+        "input":"first step input"
+    }
+
+}
